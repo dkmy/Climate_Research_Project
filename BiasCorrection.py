@@ -25,17 +25,17 @@ def BoundSearch(month):
     os.chdir(path_gfdl_cm3)
 
     if month < 10:
-        file_names_gfdl_cm3 = glob.glob("*_0" + str(month) + "*.mat")
+        file_names_gfdl_cm3 = glob.glob("*" + "0" + str(month) + "_01.mat")
     else:
-        file_names_gfdl_cm3 = glob.glob("*_" + str(month) + "*.mat")
+        file_names_gfdl_cm3 = glob.glob("*" + str(month) + "_01.mat")
 
     path_ncep = '/Users/DavidKMYang/ClimateResearch/WBGT/ncep_tasmax_nh/'
     os.chdir(path_ncep)
 
     if month < 10:
-        file_names_ncep = glob.glob("*_0" + str(month) + "*.mat")
+        file_names_ncep = glob.glob("*" + "0" + str(month) + "_01.mat")
     else:
-        file_names_ncep = glob.glob("*_" + str(month) + "*.mat")
+        file_names_ncep = glob.glob("*" + str(month) + "_01.mat")
 
     tot_Diff_List = [] #contains all the values in all the grid over the course of X years of a particular month
 
@@ -55,27 +55,34 @@ def BoundSearch(month):
             for j in range(len(tempData_ncep[0][0])):
                 modelMean = np.mean(tempData_gfdl[2][k][j])
                 actualMean = np.mean(tempData_ncep[2][k][j])
-                tempDiffList.append(actualMean - modelMean)
+                tempDiffList.append(actualMean - modelMean) #actual  - model
             DiffList.append(tempDiffList) #
+            sum_List = DiffList
 
         tot_Diff_List.append(DiffList)
 
-    sum_List = [tot_Diff_List[0]]
+    # sum_List = [tot_Diff_List[0]]
 
     for i in range(len(sum_List)):
         for k in range(len(sum_List[0])):
             sum_List[i][k] = 0
+    print (len(tot_Diff_List[0][0]))
 
-    for i in range(len(tot_Diff_List)):
+
+    for i in range(len(file_names_ncep)):
         for k in range(len(tot_Diff_List[0])):
             for j in range(len(tot_Diff_List[0][0])):
                 sum_List[k][j] = sum_List[k][j] + tot_Diff_List[i][k][j]
+    print (sum_List)
 
+    print (len(sum_List))
+    print (len(sum_List[0]))
     for i in range(len(sum_List)):
         for k in range(len(sum_List[0])):
             sum_List[i][k] = sum_List[i][k]/len(tot_Diff_List)
-    scipy.io.savemat('/Users/DavidKMYang/ClimateResearch/WBGT/BiasCorrections/' + 'biasCorrection_'+ str(month) + ".mat", mdict={'biasCorrection_'+ str(month) + ".mat": sum_List})
+    print (sum_List)
+    scipy.io.savemat('/Users/DavidKMYang/ClimateResearch/WBGT/BiasCorrections/Temp/' + 'biasCorrection_'+ str(month) + ".mat", mdict={'biasCorrection_'+ str(month): sum_List})
 
-
-for i in range(12):
-    BoundSearch(i+1)
+# for i in range(12):
+#     BoundSearch(i+1)
+BoundSearch(1)

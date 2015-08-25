@@ -21,37 +21,23 @@ def find_nearest(arr,v):
 
 def BoundSearch(month):
 
-    path_gfdl_cm3 = '/Users/DavidKMYang/ClimateResearch/WBGT/gfdl_tasmax_nh/'
+    path_gfdl_cm3 = '/Users/DavidKMYang/ClimateResearch/WBGT/BiasCorrections/Temp/'
     os.chdir(path_gfdl_cm3)
 
-    if month < 10:
-        file_names_gfdl_cm3 = glob.glob("*_0" + str(month) + "*.mat")
-    else:
-        file_names_gfdl_cm3 = glob.glob("*_" + str(month) + "*.mat")
+    file_names_gfdl_cm3 = glob.glob("biasCorrection_" + str(month) + ".mat")
 
-    path_ncep = '/Users/DavidKMYang/ClimateResearch/WBGT/ncep_tasmax_usne/'
-    os.chdir(path_ncep)
 
-    if month < 10:
-        file_names_ncep = glob.glob("*_0" + str(month) + "*.mat")
-    else:
-        file_names_ncep = glob.glob("*_" + str(month) + "*.mat")
 
     tot_Diff_List = [] #contains all the values in all the grid over the course of X years of a particular month
 
-    for i in range(len(file_names_ncep)):
+    for i in range(len(file_names_gfdl_cm3)):
         print (i)
 
         tempData_gfdl = scipy.io.loadmat(path_gfdl_cm3 + file_names_gfdl_cm3[i])
-        tempData_gfdl = tempData_gfdl[file_names_gfdl_cm3[i][:-4]][0]
-
-        tempData_ncep = scipy.io.loadmat(path_ncep + file_names_ncep[i])
-        tempData_ncep = tempData_ncep[file_names_ncep[i][:-4]][0]
-        print (tempData_ncep[0][0])
-        break
+        print (len(tempData_gfdl[file_names_gfdl_cm3[i][:-4]][0]))
+        # tempData_gfdl = tempData_gfdl[file_names_gfdl_cm3[i][:-4]][0]
+        # print (len(tempData_gfdl))
 
 
 
-
-for i in range(12):
-    BoundSearch(i+1)
+BoundSearch(1)

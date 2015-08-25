@@ -85,6 +85,7 @@ def BoundSearch(Lat_Low, Lat_High, Long_Low, Long_High, year, month, day):
         final_Val_List = np.asarray(final_Val_List)
 
         final_Total_List = np.asarray([final_Lat_List, final_Long_List, final_Val_List])
+
         scipy.io.savemat('testFile.mat', mdict={'final_Total_List': final_Total_List})
 
         flatTLat = np.array(final_Lat_List)
