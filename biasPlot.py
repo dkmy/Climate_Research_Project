@@ -20,38 +20,31 @@ def find_nearest(arr,v):
 
 
 def BoundSearch():
-    path_corrected = '/Users/DavidKMYang/ClimateResearch/WBGT/corrected_gfdl_tasmax_nh/'
 
+    path_corrected = '/Users/DavidKMYang/ClimateResearch/WBGT/corrected_gfdl_tasmax_nh/'
     os.chdir(path_corrected)
     file_names_corrected = glob.glob("*.mat")
+    k="tasmax_1985_06_01.mat_corrected.mat"
+    corrected = scipy.io.loadmat(path_corrected + k)
+    correctedLat = corrected[k[:-4]+"_Lat"]
+    correctedLong = corrected[k[:-4] + "_Long"]
 
-    for i in range(len(file_names_corrected)):
+    path_bias = '/Users/DavidKMYang/ClimateResearch/WBGT/BiasCorrections_nh/Temp/'
+    os.chdir(path_bias)
+    file_names_bias = glob.glob("*.mat")
 
-        # corrected = scipy.io.loadmat(path_corrected + file_names_corrected[i])
-        k="tasmax_1985_06_01.mat_corrected.mat"
-        corrected = scipy.io.loadmat(path_corrected + k)
+    for i in range(len(file_names_bias)):
 
-        # correctedLat = corrected[file_names_corrected[i][:-4]+"_Lat"]
-        # correctedLong = corrected[file_names_corrected[i][:-4] + "_Long"]
-        # correctedVal = corrected[file_names_corrected[i][:-4] + "_Val"]
-        correctedLat = corrected[k[:-4]+"_Lat"]
-        correctedLong = corrected[k[:-4] + "_Long"]
-        correctedVal = corrected[k[:-4] + "_Val"]
+        k = "biasCorrection_6.mat"
+        bias = scipy.io.loadmat(path_bias + k)
+        bias = bias[k[:-4]]
 
         ValForPlot = []
-
-
-        for i in range(len(correctedVal)):
-            tempList = []
-            for k in range(len(correctedVal[0])):
-                tempList.append(np.mean(correctedVal[i][k]))
-            ValForPlot.append(tempList)
-
-        print (len(ValForPlot[0]))
+        print (bias)
 
         flatTLat = np.array(correctedLat)
         flatTLon = np.array(correctedLong)
-        flatTData = np.array(ValForPlot)
+        flatTData = np.array(bias)
 
 
         # print (ValForPlot[i][k])
@@ -59,11 +52,11 @@ def BoundSearch():
         # break
         m = Basemap(width=10000000,height=9000000,
                     resolution='l',projection='stere',
-                    lat_ts = 40, lat_0=(100)/2, lon_0 = (100)/2)
+                    lat_ts = 40, lat_0=(100)/2, lon_0 = (250))
 
         lon, lat = np.meshgrid(flatTLon[0,:], flatTLat[:,0])
         x, y = m(lon,lat)
-        cs = m.pcolor(x,y,np.squeeze(flatTData), vmin=250, vmax=350)
+        cs = m.pcolor(x,y,np.squeeze(flatTData), vmin=-20, vmax=20)
 
         # Add Grid Lines
         m.drawparallels(np.arange(-80., 81., 10.), labels=[1,0,0,0], fontsize=10)

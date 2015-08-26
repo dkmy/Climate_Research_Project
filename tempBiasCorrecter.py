@@ -39,16 +39,21 @@ def BoundSearch(month):
         print (i)
 
         tempData_gfdl = scipy.io.loadmat(path_gfdl + file_names_gfdl[i])
-
         tempData_gfdl = tempData_gfdl[file_names_gfdl[i][:-4]][0]
 
 
         corrected_Val = tempData_gfdl[2]
 
-        for k in range(len(tempData_gfdl[2])):
-            for j in range(len(tempData_gfdl[2][0])):
-                for s in range(len(tempData_gfdl[2][0][0])):
+        # print ("correction: " , correction[0][0])
+
+        # print (len(corrected_Val[17][0]))
+
+
+        for k in range(len(corrected_Val)):
+            for j in range(len(corrected_Val[0])):
+                for s in range(len(corrected_Val[0][0])):
                     corrected_Val[k][j][s] = corrected_Val[k][j][s] + correction[k][j]
+
 
         final_Lat_List = np.asarray(tempData_gfdl[0])
         final_Long_List = np.asarray(tempData_gfdl[1])

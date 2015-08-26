@@ -55,6 +55,10 @@ def BoundSearch(month):
             for j in range(len(tempData_ncep[0][0])):
                 modelMean = np.mean(tempData_gfdl[2][k][j])
                 actualMean = np.mean(tempData_ncep[2][k][j])
+                # print ("modelmean :", modelMean)
+                # print ("actualmean: ", actualMean)
+                # print ("\n")
+
                 tempDiffList.append(actualMean - modelMean) #actual  - model
             DiffList.append(tempDiffList) #
             sum_List = DiffList
@@ -66,22 +70,20 @@ def BoundSearch(month):
     for i in range(len(sum_List)):
         for k in range(len(sum_List[0])):
             sum_List[i][k] = 0
-    print (len(tot_Diff_List[0][0]))
 
 
     for i in range(len(file_names_ncep)):
         for k in range(len(tot_Diff_List[0])):
             for j in range(len(tot_Diff_List[0][0])):
                 sum_List[k][j] = sum_List[k][j] + tot_Diff_List[i][k][j]
-    print (sum_List)
 
     print (len(sum_List))
     print (len(sum_List[0]))
     for i in range(len(sum_List)):
         for k in range(len(sum_List[0])):
             sum_List[i][k] = sum_List[i][k]/len(tot_Diff_List)
-    print (sum_List)
-    scipy.io.savemat('/Users/DavidKMYang/ClimateResearch/WBGT/BiasCorrections/Temp/' + 'biasCorrection_'+ str(month) + ".mat", mdict={'biasCorrection_'+ str(month): sum_List})
+    # print (sum_List)
+    # scipy.io.savemat('/Users/DavidKMYang/ClimateResearch/WBGT/BiasCorrections/Temp/' + 'biasCorrection_'+ str(month) + ".mat", mdict={'biasCorrection_'+ str(month): sum_List})
 
 # for i in range(12):
 #     BoundSearch(i+1)
