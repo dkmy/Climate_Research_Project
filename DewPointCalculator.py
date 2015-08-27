@@ -37,7 +37,7 @@ def BoundSearch():
 
 
     for i in range(len(file_names_temp)):
-
+        print (i)
         tempData_temp = scipy.io.loadmat(path_temp + file_names_temp[i])
 
         tempData_Lat = tempData_temp[file_names_temp[i][:-4]+"_Lat"]
@@ -47,8 +47,20 @@ def BoundSearch():
         tempData_rh = scipy.io.loadmat(path_rh + file_names_rh[i])
         tempData_rh = tempData_rh[file_names_rh[i][:-4]][0]
 
-        print (tempData_rh[2])
-        break
+        dewpoint = tempData_rh[2]
+
+        for k in range(len(tempData_rh[2])): #lat
+            for j in range(len(tempData_rh[2][0])): #long
+                for s in range(len(tempData_rh[2][0][0])): #day
+                    dewpoint[k][j][s] = DewPoint(tempData_Val[k][j][s], tempData_rh[2][k][j][s])
+
+        final_Lat_List = np.asarray(tempData_Lat)
+        final_Long_List = np.asarray(tempData_Long)
+        final_Val_List = np.asarray(dewpoint)
+
+        # final_Total_List = np.asarray(final_Lat_List, final_Long_List, final_Val_List)
+        scipy.io.savemat('/Users/DavidKMYang/ClimateResearch/WBGT/gfdl_dewpoint/' + "dewpoint" + file_names_rh[i][2:], mdict={"dewpoint" + file_names_rh[i][2:][:-4] + "_Lat" : final_Lat_List, "dewpoint" + file_names_rh[i][2:][:-4] + "_Long" : final_Long_List, "dewpoint" + file_names_rh[i][2:][:-4] + "_Val" : final_Val_List})
+
 
 
 BoundSearch()
