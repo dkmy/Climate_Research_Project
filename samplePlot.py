@@ -20,37 +20,33 @@ def find_nearest(arr,v):
 
 
 def BoundSearch():
-    path_corrected = '/Users/DavidKMYang/ClimateResearch/WBGT/corrected_gfdl_tasmax_nh/'
+    path_dew = '/Users/DavidKMYang/ClimateResearch/WBGT/gfdl_dewpoint/'
+    os.chdir(path_dew)
+    file_names_dew = glob.glob("*_06_01.mat")
 
-    os.chdir(path_corrected)
-    file_names_corrected = glob.glob("*.mat")
 
-    for i in range(len(file_names_corrected)):
+    for i in range(len(file_names_dew)):
+        print (i)
+        tempData_temp = scipy.io.loadmat(path_dew + file_names_dew[i])
+        tempData_Lat = tempData_temp[file_names_dew[i][:-4]+"_Lat"]
+        tempData_Long = tempData_temp[file_names_dew[i][:-4] + "_Long"]
+        tempData_Val = tempData_temp[file_names_dew[i][:-4] + "_Val"]
 
-        # corrected = scipy.io.loadmat(path_corrected + file_names_corrected[i])
-        k="tasmax_1985_06_01.mat_corrected.mat"
-        corrected = scipy.io.loadmat(path_corrected + k)
 
-        # correctedLat = corrected[file_names_corrected[i][:-4]+"_Lat"]
-        # correctedLong = corrected[file_names_corrected[i][:-4] + "_Long"]
-        # correctedVal = corrected[file_names_corrected[i][:-4] + "_Val"]
-        correctedLat = corrected[k[:-4]+"_Lat"]
-        correctedLong = corrected[k[:-4] + "_Long"]
-        correctedVal = corrected[k[:-4] + "_Val"]
 
         ValForPlot = []
 
 
-        for i in range(len(correctedVal)):
+        for i in range(len(tempData_Val)):
             tempList = []
-            for k in range(len(correctedVal[0])):
-                tempList.append(np.mean(correctedVal[i][k]))
+            for k in range(len(tempData_Val[0])):
+                tempList.append(np.mean(tempData_Val[i][k]))
             ValForPlot.append(tempList)
 
         print (len(ValForPlot[0]))
 
-        flatTLat = np.array(correctedLat)
-        flatTLon = np.array(correctedLong)
+        flatTLat = np.array(tempData_Lat)
+        flatTLon = np.array(tempData_Long)
         flatTData = np.array(ValForPlot)
 
 
@@ -63,7 +59,7 @@ def BoundSearch():
 
         lon, lat = np.meshgrid(flatTLon[0,:], flatTLat[:,0])
         x, y = m(lon,lat)
-        cs = m.pcolor(x,y,np.squeeze(flatTData), vmin=250, vmax=350)
+        cs = m.pcolor(x,y,np.squeeze(flatTData), vmin=-40, vmax=40)
 
         # Add Grid Lines
         m.drawparallels(np.arange(-80., 81., 10.), labels=[1,0,0,0], fontsize=10)
@@ -78,7 +74,7 @@ def BoundSearch():
         cbar = m.colorbar(cs, location='bottom', pad="10%")
 
         # Add Title
-        plt.title('Mean Temperature in 1980, january')
+        plt.title('Mean Temperature in 1981, january')
 
         plt.show()
         break
