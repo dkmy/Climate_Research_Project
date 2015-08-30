@@ -23,15 +23,23 @@ def Julian(y, m, d):
     return tt.tm_yday
 
 def direct(lat, long, Julday):
-    I0 = 1368
+    I0 = 1368.0
     x = 0.9856 * Julday - 2.72
-    alpha = lat
-    sinb = 0.3978+math.sin(x-77.51+1.92*math.sin(x))
-    tlt = -7.66*math.sin(x)-9.87* math.sin(2*x+24.99+3.83*math.sin(x)) + 14.0
-    gamma = (tlt-12*30.0) * 15/30.0
 
-    sinh = math.sin(alpha) * sinb + math.cos(alpha) * math.sqrt(1-math.pow(sinb, 2)) * math.cos(gamma)
+    alpha = math.radians(lat)
+    sinb = 0.3978+math.sin(x-77.51+1.92*math.sin(x))
+    tlt = -7.66*math.sin(x)-9.87* math.sin(2*x+0.43615778007+0.066846110351*math.sin(x)) + 14.0
+    gamma = (tlt-12*30.0) * 15/30.0
+    # print (tlt)
+    # print (gamma)
+    # print (math.sqrt(1-math.pow(sinb, 2)))
+    # sinh = math.sin(alpha) * sinb + math.cos(alpha) * math.cos(math.asin(sinb)) * math.cos(gamma)
+    print sinb
+    print math.asin(sinb)
+    sinh = math.sin(alpha) * sinb + math.cos(alpha) * math.cos(math.asin(sinb)) * math.cos(gamma)
+
     # tlinke =math.log(G/(I0 * sinh * 0.84)) * sinh/(-0.027)
+    # sinh = 0
     tlinke = 4.25
     I = I0 * math.exp((-tlinke * 1000/1023.25)/(.9+.94*sinh))
     I = I * sinh
@@ -53,5 +61,5 @@ def diffuse (J, B, sinh):
 
     return D
 
-print (direct(42, 0, Julian(2010, 12, 5)))
+print (direct(42, 0, Julian(2010, 6, 14)))
 
