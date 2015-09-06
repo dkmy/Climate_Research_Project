@@ -12,32 +12,28 @@ import pandas as pd
 from numpy import genfromtxt
 import math
 import os
+from sympy import *
 
-def DewPoint(temp, rh):
-    temp = temp - 273.15
-    if rh != 0:
-        x = 243.04*(math.log(rh/100.0)+((17.625*temp)/(243.04+temp)))/(17.625-math.log(rh/100.0)-((17.625*temp)/(243.04+temp)))
-    else:
-        x = float('nan')
-    return x
+#
+# x = symbols('x')
+#
+# from sympy import roots, solve_poly_system
+#
+# print (solve(4*x**3 - x +3, x))
+#
+# print (solve(4*x**4 + 3*x**2 - 4*x + 42, rational = False))
+#
+# # coeff = [3, -1, 0, 4]
+# # print (np.roots(coeff))
 
-print ("rh_2047_01_01.mat"[2:][:-4])
+path_temp = '/Users/DavidKMYang/ClimateResearch/WBGT/corrected_gfdl_tasmax_nh/'
+os.chdir(path_temp)
+file_names_temp = glob.glob("*.mat")
 
+print (len(file_names_temp))
 
+path_rh = '/Users/DavidKMYang/ClimateResearch/WBGT/gfdl-esm2m-rh-nh/'
+os.chdir(path_rh)
+file_names_rh = glob.glob("*.mat")
 
-
-path_dew = '/Users/DavidKMYang/ClimateResearch/WBGT/gfdl_dewpoint/'
-os.chdir(path_dew)
-file_names_dew = glob.glob("*.mat")
-
-
-for i in range(len(file_names_dew)):
-    print (i)
-    tempData_temp = scipy.io.loadmat(path_dew + file_names_dew[i])
-    tempData_Lat = tempData_temp[file_names_dew[i][:-4]+"_Lat"]
-    tempData_Long = tempData_temp[file_names_dew[i][:-4] + "_Long"]
-    tempData_Val = tempData_temp[file_names_dew[i][:-4] + "_Val"]
-
-    print (tempData_Val)
-
-    break
+print (len(file_names_rh))

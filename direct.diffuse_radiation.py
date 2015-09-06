@@ -24,7 +24,7 @@ def Julian(y, m, d):
 
 def direct(lat, long, Julday):
     I0 = 1368.0
-    x = 0.9856 * Julday - 2.72
+    x = 0.9856 * (Julday)/365 - 2.72
 
     alpha = math.radians(lat)
     sinb = 0.3978+math.sin(x-77.51+1.92*math.sin(x))
@@ -32,14 +32,15 @@ def direct(lat, long, Julday):
     gamma = (tlt-12*30.0) * 15/30.0
     # print (tlt)
     # print (gamma)
-    # print (math.sqrt(1-math.pow(sinb, 2)))
-    # sinh = math.sin(alpha) * sinb + math.cos(alpha) * math.cos(math.asin(sinb)) * math.cos(gamma)
+    # print (math.sqrt(1-math.pow(sinb, 2)))from
+    # sinh = math.sin(alphavertical optical density of the pure and dry standard atmosphere) * sinb + math.cos(alpha) * math.cos(math.asin(sinb)) * math.cos(gamma)
     print sinb
     print math.asin(sinb)
     sinh = math.sin(alpha) * sinb + math.cos(alpha) * math.cos(math.asin(sinb)) * math.cos(gamma)
 
     # tlinke =math.log(G/(I0 * sinh * 0.84)) * sinh/(-0.027)
     # sinh = 0
+
     tlinke = 4.25
     I = I0 * math.exp((-tlinke * 1000/1023.25)/(.9+.94*sinh))
     I = I * sinh
@@ -61,5 +62,5 @@ def diffuse (J, B, sinh):
 
     return D
 
-print (direct(42, 0, Julian(2010, 6, 14)))
+print (direct(42, 0, Julian(2010, 2, 1)))
 
