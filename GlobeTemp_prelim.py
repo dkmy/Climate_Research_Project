@@ -29,10 +29,12 @@ def Globetemp(temp, rh, windspeed, dewpoint):
     ea = math.exp((17.67*(dewpoint - temp)/(dewpoint+243.5))) * (1.0007 + 0.00000346 * p) * 6.112 * math.exp((17.502*temp)/(240.97+temp))
     realEa = 0.575 * math.pow(ea, 1/7)
 
-    B = S*(fdb/(2.268*math.pow(10,-18)*math.cos(zenith)) + (1.2/(5.67 * math.pow(10,-8))) * fdif) + realEa * math.pow(temp, 4)
+    B = S*(fdb/(2.268*math.pow(10,-8)*math.cos(zenith)) + (1.2/(5.67 * math.pow(10,-8))) * fdif) + realEa * math.pow(temp, 4)
+    print (B)
+    print ("zentith ", math.cos(zenith))
+    print (C)
 
     Tg = (B * C * temp + 7680000)/(C+256000)
-
     return Tg
 
 
@@ -92,14 +94,16 @@ def BoundSearch():
                     # print (tempData_Val_windspeed[k][j][s])
                     # print (tempData_Val_dewpoint[k][j][s])
                     globeT[k][j][s] = Globetemp(tempData_Val_temp[k][j][s], tempData_rh[2][k][j][s], tempData_Val_windspeed[k][j][s], tempData_Val_dewpoint[k][j][s])
-
+                    break
+            break
+        break
         final_Lat_List = np.asarray(tempData_Lat_temp)
         final_Long_List = np.asarray(tempData_Long_temp)
         final_Val_List = np.asarray(globeT)
 
         # final_Total_List = np.asarray(final_Lat_List, final_Long_List, final_Val_List)
         scipy.io.savemat('/Users/DavidKMYang/ClimateResearch/WBGT/gfdl_globe/' + "globe" + file_names_rh[i][2:], mdict={"globe" + file_names_rh[i][2:][:-4] + "_Lat" : final_Lat_List, "globe" + file_names_rh[i][2:][:-4] + "_Long" : final_Long_List, "globe" + file_names_rh[i][2:][:-4] + "_Val" : final_Val_List})
-
+        break
 
 
 BoundSearch()

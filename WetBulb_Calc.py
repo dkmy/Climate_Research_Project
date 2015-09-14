@@ -19,7 +19,8 @@ import math
 def WetBulb(temp, rh):
     temp = temp - 273.15
     if rh != 0:
-        x = (-5.806 + 0.672 * temp - 0.006 * math.pow(temp, 2)+(0.061 + 0.004 * temp + 99*10-6 * math.pow(temp, 2)) * rh + (-33*10-6 - 5*10-6 *temp - 1*10-7 * math.pow(temp, 2)) * math.pow(rh, 2))
+        # x = (-5.806 + 0.672 * temp - 0.006 * math.pow(temp, 2)+(0.061 + 0.004 * temp + 99*10-6 * math.pow(temp, 2)) * rh + (-33*10-6 - 5*10-6 *temp - 1*10-7 * math.pow(temp, 2)) * math.pow(rh, 2))
+        x = temp * math.atan(.151977 * (rh + 8.313659)**(0.5)) + math.atan(temp + rh) - math.atan(rh - 1.676331) + .00391838 * rh ** 1.5 * math.atan(0.023101 * rh) -4.686035
     else:
         x = float('nan')
     return x

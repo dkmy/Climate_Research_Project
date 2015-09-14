@@ -62,19 +62,25 @@ def BoundSearch():
         for k in range(len(tempData_Val_wetbulb)): #lat
             for j in range(len(tempData_Val_wetbulb[0])): #long
                 for s in range(len(tempData_Val_wetbulb[0][0])): #day
+                    print (tempData_Val_temp[k][j][s])
+                    print (tempData_Val_wetbulb[k][j][s])
+                    print (tempData_Val_globe[k][j][s])
+                    break
                     # print ("hi")
                     # print (tempData_Val_temp[k][j][s])
                     # print (tempData_rh[2][k][j][s])
                     # print (tempData_Val_windspeed[k][j][s])
                     # print (tempData_Val_dewpoint[k][j][s])
                     globeT[k][j][s] = 0.1* tempData_Val_temp[k][j][s] + 0.7* tempData_Val_wetbulb[k][j][s] + 0.2 * tempData_Val_globe[k][j][s]
+                break
+            break
 
         final_Lat_List = np.asarray(tempData_Lat_temp)
         final_Long_List = np.asarray(tempData_Long_temp)
         final_Val_List = np.asarray(globeT)
 
         # final_Total_List = np.asarray(final_Lat_List, final_Long_List, final_Val_List)
-        scipy.io.savemat('/Users/DavidKMYang/ClimateResearch/WBGT/gfdl_wbgt/' + "wbgt" + file_names_globe[i][2:], mdict={"wbgt" + file_names_globe[i][2:][:-4] + "_Lat" : final_Lat_List, "wbgt" + file_names_globe[i][2:][:-4] + "_Long" : final_Long_List, "wbgt" + file_names_globe[i][2:][:-4] + "_Val" : final_Val_List})
+        scipy.io.savemat('/Users/DavidKMYang/ClimateResearch/WBGT/gfdl_wbgt/' + "wbgt" + file_names_globe[i][5:], mdict={"wbgt" + file_names_globe[i][5:][:-4] + "_Lat" : final_Lat_List, "wbgt" + file_names_globe[i][5:][:-4] + "_Long" : final_Long_List, "wbgt" + file_names_globe[i][5:][:-4] + "_Val" : final_Val_List})
 
 
 
