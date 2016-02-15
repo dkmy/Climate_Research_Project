@@ -59,9 +59,12 @@ def BoundSearch(month):
         final_Long_List = np.asarray(tempData_gfdl[1])
         final_Val_List = np.asarray(corrected_Val)
 
-        # final_Total_List = np.asarray(final_Lat_List, final_Long_List, final_Val_List)
+        print (final_Val_List)
+        final_Total_List = np.asarray(final_Lat_List, final_Long_List, final_Val_List)
         scipy.io.savemat('/Users/DavidKMYang/ClimateResearch/WBGT/corrected_gfdl_tasmax_nh/' + file_names_gfdl[i] + "_corrected.mat", mdict={file_names_gfdl[i] + "_corrected_Lat" : final_Lat_List, file_names_gfdl[i] + "_corrected_Long" : final_Long_List, file_names_gfdl[i] + "_corrected_Val" : final_Val_List})
-
+        break
+    return
 
 for i in range(12):
     BoundSearch(i+1)
+    break

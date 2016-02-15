@@ -1,6 +1,5 @@
 __author__ = 'DavidKMYang'
 
-#given a grid and time, average results of multiple models
 import h5py
 from mpl_toolkits.basemap import Basemap
 import matplotlib.pyplot as plt
@@ -55,9 +54,6 @@ def BoundSearch(month):
             for j in range(len(tempData_ncep[0][0])):
                 modelMean = np.mean(tempData_gfdl[2][k][j])
                 actualMean = np.mean(tempData_ncep[2][k][j])
-                # print ("modelmean :", modelMean)
-                # print ("actualmean: ", actualMean)
-                # print ("\n")
 
                 tempDiffList.append(actualMean - modelMean) #actual  - model
             DiffList.append(tempDiffList) #

@@ -18,25 +18,22 @@ def find_nearest(arr,v):
     return (np.abs(arr - v)).argmin()
 
 def BoundSearch():
-    path_wbgt = '/Users/DavidKMYang/ClimateResearch/WBGT/gfdl_wbgt/'
+    path_wbgt = '/Users/DavidKMYang/ClimateResearch/WBGT/gfdl_tasmax_nh/'
     os.chdir(path_wbgt)
     file_names_wbgt = glob.glob("*.mat")
 
-
     for i in range(len(file_names_wbgt)):
-        print (i)
-        tempData_wbgt = scipy.io.loadmat(path_wbgt + file_names_wbgt[i])
-        tempData_wbgt = scipy.io.loadmat(path_wbgt + 'wbgt_1981_07_01.mat')
-        print (tempData_wbgt)
-        break
 
-        tempData_Lat_wbgt = tempData_wbgt[file_names_wbgt[i][:-4]+"_Lat"]
-        tempData_Long_wbgt = tempData_wbgt[file_names_wbgt[i][:-4] + "_Long"]
-        tempData_Val_wbgt = tempData_wbgt[file_names_wbgt[i][:-4] + "_Val"]
+        tempData_wbgt = scipy.io.loadmat(path_wbgt + file_names_wbgt[i])
+        tempData_wbgt = scipy.io.loadmat(path_wbgt + 'tasmax_2005_07_01.mat')
+        tempData_wbgt = tempData_wbgt['tasmax_2005_07_01'][0]
+
+        tempData_Val_wbgt = tempData_wbgt[2]
 
         ValForPlot = []
 
 
+        tempData_Lat_wbgt = tempData_wbgt[0]
 
         for i in range(len(tempData_Val_wbgt)):
             tempList = []
@@ -45,22 +42,17 @@ def BoundSearch():
             ValForPlot.append(tempList)
 
         print (len(ValForPlot[0]))
-
-        flatTLat = np.array(tempData_Lat_wbgt)
-        flatTLon = np.array(tempData_Long_wbgt)
+        flatTLat = np.array(tempData_wbgt[0])
+        flatTLon = np.array(tempData_wbgt[1])
         flatTData = np.array(ValForPlot)
 
-
-        # print (ValForPlot[i][k])
-
-        # break
-        m = Basemap(width=10000000,height=9000000,
+        m = Basemap(width=5000000,height=5000000,
                     resolution='l',projection='stere',
-                    lat_ts = 40, lat_0=(10000)/2, lon_0 = (10000)/2)
+                    lat_ts = 3, lat_0=28, lon_0 = 52.6)
 
         lon, lat = np.meshgrid(flatTLon[0,:], flatTLat[:,0])
         x, y = m(lon,lat)
-        cs = m.pcolor(x,y,np.squeeze(flatTData), vmin=0, vmax=30)
+        cs = m.pcolor(x,y,np.squeeze(flatTData), vmin=250, vmax=+(350))
 
         # Add Grid Lines
         m.drawparallels(np.arange(-80., 81., 10.), labels=[1,0,0,0], fontsize=10)
@@ -75,7 +67,7 @@ def BoundSearch():
         cbar = m.colorbar(cs, location='bottom', pad="10%")
 
         # Add Title
-        plt.title('Mean Temperature in 1981, july')
+        plt.title('n')
 
         plt.show()
         break
