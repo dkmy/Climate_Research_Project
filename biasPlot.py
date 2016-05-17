@@ -24,12 +24,12 @@ def BoundSearch():
     path_corrected = '/Users/DavidKMYang/ClimateResearch/WBGT/corrected_gfdl_tasmax_nh/'
     os.chdir(path_corrected)
     file_names_corrected = glob.glob("*.mat")
-    k="tasmax_1985_06_01.mat_corrected.mat"
+    k="tasmax_1985_01_01.mat_corrected.mat"
     corrected = scipy.io.loadmat(path_corrected + k)
     correctedLat = corrected[k[:-4]+"_Lat"]
     correctedLong = corrected[k[:-4] + "_Long"]
 
-    path_bias = '/Users/DavidKMYang/ClimateResearch/WBGT/BiasCorrections_nh/Temp/'
+    path_bias = '/Users/DavidKMYang/ClimateResearch/WBGT/BiasCorrected_v2/'
     os.chdir(path_bias)
     file_names_bias = glob.glob("*.mat")
 
@@ -46,6 +46,9 @@ def BoundSearch():
         flatTLon = np.array(correctedLong)
         flatTData = np.array(bias)
 
+        for i in range(len(flatTLon)):
+            for j in range(len(flatTLon[0])):
+                flatTLon[i][j] -= 180
 
         # print (ValForPlot[i][k])
 
@@ -53,6 +56,9 @@ def BoundSearch():
         m = Basemap(width=10000000,height=9000000,
                     resolution='l',projection='stere',
                     lat_ts = 40, lat_0=(100)/2, lon_0 = (250))
+
+        m = Basemap(projection = 'kav7', lon_0 = 0, resolution = 'l')
+
 
         lon, lat = np.meshgrid(flatTLon[0,:], flatTLat[:,0])
         x, y = m(lon,lat)

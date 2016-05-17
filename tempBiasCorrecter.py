@@ -15,13 +15,9 @@ import pandas as pd
 from numpy import genfromtxt
 
 
-
-def find_nearest(arr,v):
-    return (np.abs(arr - v)).argmin()
-
 def BoundSearch(month):
 
-    path_bias = '/Users/DavidKMYang/ClimateResearch/WBGT/BiasCorrections_nh/Temp/'
+    path_bias = '/Users/DavidKMYang/ClimateResearch/WBGT/BiasCorrected_v2/'
     correction = scipy.io.loadmat(path_bias + "biasCorrection_" + str(month) + ".mat")
 
 
@@ -59,12 +55,12 @@ def BoundSearch(month):
         final_Long_List = np.asarray(tempData_gfdl[1])
         final_Val_List = np.asarray(corrected_Val)
 
-        print (final_Val_List)
-        final_Total_List = np.asarray(final_Lat_List, final_Long_List, final_Val_List)
-        scipy.io.savemat('/Users/DavidKMYang/ClimateResearch/WBGT/corrected_gfdl_tasmax_nh/' + file_names_gfdl[i] + "_corrected.mat", mdict={file_names_gfdl[i] + "_corrected_Lat" : final_Lat_List, file_names_gfdl[i] + "_corrected_Long" : final_Long_List, file_names_gfdl[i] + "_corrected_Val" : final_Val_List})
-        break
+
+        # final_Total_List = np.asarray(final_Lat_List, final_Long_List, final_Val_List)
+        scipy.io.savemat('/Users/DavidKMYang/ClimateResearch/WBGT/BiasCorrected_v2/BiasCorrectedVals/' + file_names_gfdl[i] + "_corrected.mat", mdict={file_names_gfdl[i] + "_corrected_Lat" : final_Lat_List, file_names_gfdl[i] + "_corrected_Long" : final_Long_List, file_names_gfdl[i] + "_corrected_Val" : final_Val_List})
+
     return
 
 for i in range(12):
     BoundSearch(i+1)
-    break
+    # break

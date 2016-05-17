@@ -11,18 +11,16 @@ import plotly.plotly as py
 import glob
 import pandas as pd
 from numpy import genfromtxt
-from mpl_toolkits.basemap import shiftgrid
 
 
+def hist_plot(header, yearStart, yearEnd, monthBool, monthStart, monthEnd, customBool, stdevBool):
 
-def hist_plot(header, yearStart, yearEnd, monthBool, monthStart, monthEnd, customBool):
-
-    if header == "tmax":
-        path_wbgt = '/Users/DavidKMYang/ClimateResearch/WBGT/ncep_tasmax_nh/' #ncep is historical
+    if header == "tasmax":
+        path_wbgt = '/Users/DavidKMYang/ClimateResearch/Middle_East_Data/gfdl-cm3-tasmax-historical-world-nbc-v7/combine/'
     elif customBool == 0:
-        path_wbgt = '/Users/DavidKMYang/ClimateResearch/WBGT/gfdl_tasmax_nh/' #gfdl is model
+        path_wbgt = '/Users/DavidKMYang/ClimateResearch/WBGT/gfdl_tasmax_nh/'
     else:
-        path_wbgt = '/Users/DavidKMYang/ClimateResearch/WBGT/BiasCorrected_v2/BiasCorrectedVals/'
+        path_wbgt = '/Users/DavidKMYang/ClimateResearch/WBGT/corrected_gfdl_tasmax_nh/'
 
 
     os.chdir(path_wbgt)
@@ -44,6 +42,8 @@ def hist_plot(header, yearStart, yearEnd, monthBool, monthStart, monthEnd, custo
     totalDays = 0
     actualTotalDays = 0
     Val2D = []
+    Val3D_Stdev = []
+
 
     for n in range(len(file_names_wbgt)):
         if (customBool == 0):
@@ -53,8 +53,8 @@ def hist_plot(header, yearStart, yearEnd, monthBool, monthStart, monthEnd, custo
         else:
             tempData_wbgt = scipy.io.loadmat(path_wbgt + file_names_wbgt[n])
 
-            # tempData_Lat_temp = tempData_wbgt[file_names_wbgt[i][:-4]+"_Lat"]
-            # tempData_Long_temp = tempData_wbgt[file_names_wbgt[i][:-4] + "_Long"]
+            tempData_Lat_temp = tempData_wbgt[file_names_wbgt[i][:-4]+"_Lat"]
+            tempData_Long_temp = tempData_wbgt[file_names_wbgt[i][:-4] + "_Long"]
             tempData_Val_wbgt = tempData_wbgt[file_names_wbgt[n][:-4] + "_Val"]
 
         # print (len(tempData_Val_wbgt))
@@ -64,13 +64,19 @@ def hist_plot(header, yearStart, yearEnd, monthBool, monthStart, monthEnd, custo
         if n == 0:
             for i in range(len(tempData_Val_wbgt)):
                 tempLatList = []
+                Val2D_stdev = []
                 for k in range(len(tempData_Val_wbgt[0])):
+                    # Val1D_stdev = []
                     tempLong = 0
                     for j in range(len(tempData_Val_wbgt[0][0])):
                         tempLong += (tempData_Val_wbgt[i][k][j])
+                        # Val1D_stdev.append(tempData_Val_wbgt[i][k][j])
                         totalDays += 1
                     tempLatList.append(tempLong)
+                    Val2D_stdev.append(tempData_Val_wbgt[i][k])
                 Val2D.append(tempLatList)
+                Val3D_Stdev.append(Val2D_stdev)
+
             break
 
         for i in range(len(tempData_Val_wbgt)):
@@ -78,6 +84,7 @@ def hist_plot(header, yearStart, yearEnd, monthBool, monthStart, monthEnd, custo
                 tempLong = 0
                 for j in range(len(tempData_Val_wbgt[0][0])):
                     tempLong += (tempData_Val_wbgt[i][k][j])
+                    Val3D_Stdev[i][k][j].append(tempData_Val_wbgt[i][k][j])
                     totalDays += 1
                 Val2D[i][k] += tempLong
 
@@ -86,58 +93,37 @@ def hist_plot(header, yearStart, yearEnd, monthBool, monthStart, monthEnd, custo
             Val2D[i][k] /= actualTotalDays
 
     Val2D = np.array(Val2D)
+    if stdevBool:
+        # print (len(Val3D_Stdev[0]))
+        return Val3D_Stdev
+    else:
+        return Val2D
 
-    flat_product = Val2D.flatten()
-
-    numpy_hist = plt.figure()
-
-    # plt.hist(flat_product, bins)
-    n, bins, patches = plt.hist(flat_product, 20, normed = 1, facecolor='green', alpha=0.5)
-
-    # plot_url = py.plot_mpl(numpy_hist, filename='docs/histogram-mpl-legend')
-    plt.grid(True)
-    plt.show()
-
-    return Val2D
-
-def Plot(array, correct_Bool):
-    path_wbgt = '/Users/DavidKMYang/ClimateResearch/WBGT/gfdl_tasmax_nh/'
-    path_wbgt_corrected = '/Users/DavidKMYang/ClimateResearch/WBGT/BiasCorrected_v2/BiasCorrectedVals/'
+def Plot(array):
+    path_wbgt = '/Users/DavidKMYang/ClimateResearch/Middle_East_Data/gfdl-cm3-tasmax-historical-world-nbc-v7/combine/'
 
     tempData_wbgt = scipy.io.loadmat(path_wbgt + 'tasmax_2005_07_01.mat')
     tempData_wbgt = tempData_wbgt['tasmax_2005_07_01'][0]
-
-    tempData_wbgt_corrected = scipy.io.loadmat(path_wbgt_corrected + 'tasmax_2005_07_01.mat_corrected.mat')
 
     flatTLat = np.array(tempData_wbgt[0])
     flatTLon = np.array(tempData_wbgt[1])
     flatTData = np.array(array)
 
-    if correct_Bool:
-        flatTLat = np.array(tempData_wbgt_corrected['tasmax_2005_07_01.mat_corrected_Lat'])
-        flatTLon = np.array(tempData_wbgt_corrected['tasmax_2005_07_01.mat_corrected_Long'])
-        # flatTData = np.array(tempData_wbgt_corrected['tasmax_2005_07_01.mat_corrected_Val'])
-
-
-    for i in range(len(flatTLon)):
-        for j in range(len(flatTLon[0])):
-            flatTLon[i][j] -= 180
-
-
-
     # m = Basemap(width=10000000,height=10000000,
     #             resolution='l',projection='kav7',
     #             lat_ts = 10, lat_0=30, lon_0 = 30)
-    m = Basemap(projection = 'kav7', lon_0 = 0, resolution = 'l')
-
-
+    m = Basemap(projection = 'robin', lon_0 = 0, resolution = 'l')
+    # m = Basemap(projection='merc',llcrnrlat=-80,urcrnrlat=80,\
+    #         llcrnrlon=-180,urcrnrlon=180,lat_ts=20,resolution='l')
+    # m = Basemap(projection='hammer',lon_0=0,resolution='l')
+    # m = Basemap(width=100000000/4,height=70000000/4, resolution='l',projection='stere', lat_ts = 40, lat_0=50, lon_0 = 100)
     lon, lat = np.meshgrid(flatTLon[0,:], flatTLat[:,0])
     x, y = m(lon,lat)
-    cs = m.pcolor(x,y,np.squeeze(flatTData), vmin=-15, vmax=15)
+    cs = m.pcolor(x,y,np.squeeze(flatTData), vmin=-6, vmax=6)
     m.drawmapboundary(fill_color='0.3')
     # Add Grid Lines
     m.drawparallels(np.arange(-80., 81., 10.), labels=[1,0,0,0], fontsize=10)
-    m.drawmeridians(np.arange(-180., 181., 10.), labels=[0,0,0,1], fontsize=10)
+    m.drawmeridians(np.arange(0., 360., 10.), labels=[0,0,0,1], fontsize=10)
 
     # Add Coastlines, States, and Country Boundaries
     m.drawcoastlines()
@@ -152,47 +138,39 @@ def Plot(array, correct_Bool):
 
     plt.show()
 
+# model_Data = hist_plot("tasmax", 1980, 2005, 1, 1, 2, 0)
 # model_Data = hist_plot("tasmax", 1994, 2005, 0, 0, 0, 0)
-# historical_Data = hist_plot("tmax", 1994, 2005, 0, 0, 0, 0)
-corrected_Data = hist_plot("tasmax", 1994, 2005, 0, 0, 0, 1)
-#
-# # print (historical_Data)
+
+stdev_Data = hist_plot("tasmax", 1980, 1980, 1, 1, 12, 0, 1)
+# print (len(stdev_Data))
+# print (len(stdev_Data[0]))
+# print (len(stdev_Data[0][0]))
+# print (len(stdev_Data[0][0][0]))
+
+final_stdev = []
+
+for i in range(len(stdev_Data)):
+    temp_Arr = []
+    for k in range(len(stdev_Data[0])):
+        low_temp = np.array(stdev_Data[i][k])
+        temp_Arr.append(np.std(low_temp, ddof = 1))
+    final_stdev.append(temp_Arr)
+
+Plot(final_stdev)
+
+
+# Plot(model_Data)
+# print (historical_Data)
 # differences = []
 # for i in range(len(model_Data)):
 #     tempArray = []
 #     for k in range(len(model_Data[0])):
-#         tempArray.append(corrected_Data[i][k] - historical_Data[i][k]) #subtract model from historical , model - historical
+#         tempArray.append(model_Data[i][k] - historical_Data[i][k]) #subtract model from historical , model - historical
 #     differences.append(tempArray)
 #
 # print (len(differences[0]))
-# Plot(differences, False)
+# Plot(differences)
 
-differences = []
 
-path_wbgt = '/Users/DavidKMYang/ClimateResearch/WBGT/gfdl_tasmax_nh/'
-path_wbgt_corrected = '/Users/DavidKMYang/ClimateResearch/WBGT/BiasCorrected_v2/BiasCorrectedVals/'
-
-tempData_wbgt = scipy.io.loadmat(path_wbgt + 'tasmax_2005_06_01.mat')
-tempData_wbgt = tempData_wbgt['tasmax_2005_06_01'][0]
-
-tempData_wbgt_corrected = scipy.io.loadmat(path_wbgt_corrected + 'tasmax_2005_06_01.mat_corrected.mat')
-# tempData_wbgt_corrected = tempData_wbgt_corrected['tasmax_2005_06_01.mat_corrected'][0]
-flatTLat = np.array(tempData_wbgt_corrected['tasmax_2005_06_01.mat_corrected_Lat'])
-flatTLon = np.array(tempData_wbgt_corrected['tasmax_2005_06_01.mat_corrected_Long'])
-flatTData = np.array(tempData_wbgt_corrected['tasmax_2005_06_01.mat_corrected_Val'])
-
-for i in range(len(tempData_wbgt[0])):
-    tempArray = []
-    for k in range(len(tempData_wbgt[0][0])):
-        tempArray.append(np.mean(tempData_wbgt[2][i][k]) - np.mean(flatTData[i][k]))
-    differences.append(tempArray)
-
-# print (tempData_wbgt[2][3][4])
-
-# print (len(tempArray))
-
-# print (len(tempData_wbgt))
-
-# Plot(differences, False)
 
 
